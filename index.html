@@ -937,11 +937,16 @@ async function submitOrder() {
   const orderLines = [baoList, salatList, bowlList].filter(Boolean).join(' | ');
 
   try {
+    const params = new URLSearchParams();
+    params.append('name', name);
+    params.append('baos', baoList || '无');
+    params.append('salats', salatList || '无');
+    params.append('bowls', bowlList || '无');
+    params.append('total', totalStr);
     await fetch('https://script.google.com/macros/s/AKfycbw5YFalmBcyZ6TqsF4quunHAz4Z6vaPz9nCjNk6riKXT_RMmMqowMkCsmveau3AvnppsA/exec', {
       method: 'POST',
       mode: 'no-cors',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, baos: baoList, salats: salatList, bowls: bowlList, total: totalStr })
+      body: params
     });
   } catch(err) { console.error(err); }
 
