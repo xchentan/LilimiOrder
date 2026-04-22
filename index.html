@@ -909,14 +909,13 @@ function showSection(sec) {
   });
 }
 
-function submitOrder() {
+async function submitOrder() {
   const name = document.getElementById('customerName').value.trim();
   if (!name) {
     document.getElementById('customerName').focus();
     document.getElementById('customerName').style.outline = '2px solid #e74c3c';
     return;
   }
-  document.getElementById('customerName').style.outline = '';
 
   const items = Object.keys(quantities).filter(k => quantities[k] > 0);
   if (items.length === 0) return;
@@ -925,50 +924,37 @@ function submitOrder() {
 
   const baoList = ['1','2','3','4','5','6','7'].filter(k => quantities[k] > 0)
     .map(k => `${menuItems[k].name}×${quantities[k]}`).join(', ');
+
   const salatList = ['S1','S2','S3','S4'].filter(k => quantities[k] > 0)
     .map(k => `${menuItems[k].name}${menuItems[k].size ? '('+menuItems[k].size+')' : ''}×${quantities[k]}`).join(', ');
+
   const bowlList = ['F1','F2','F3','F4','F5'].filter(k => quantities[k] > 0)
     .map(k => `${menuItems[k].name}×${quantities[k]}`).join(', ');
+
   const totalStr = '合计 €' + total.toFixed(2);
   const orderLines = [baoList, salatList, bowlList].filter(Boolean).join(' | ');
 
-  // 用隐藏 iframe + form POST 绕过 CORS
-  const iframeName = 'gform_iframe_' + Date.now();
-  const iframe = document.createElement('iframe');
-  iframe.name = iframeName;
-  iframe.style.display = 'none';
-  document.body.appendChild(iframe);
+  // 🔥 核心：用 fetch 提交
+  const FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSey5ReIPGBfItFFXhGGNtmZILzwYvlMpdE_GXzWyUEvZ-7cHQ/formResponse';
 
-  const form = document.createElement('form');
-  form.method = 'POST';
-  form.action = 'https://docs.google.com/forms/d/e/1FAIpQLSey5ReIPGBfItFFXhGGNtmZILzwYvlMpdE_GXzWyUEvZ-7cHQ/formResponse';
-  form.target = iframeName;
-  form.style.display = 'none';
+  const formData = new FormData();
+  formData.append('entry.1308096832', name);
+  formData.append('entry.1078371469', baoList || '无');
+  formData.append('entry.705172156', salatList || '无');
+  formData.append('entry.1386287882', bowlList || '无');
+  formData.append('entry.1793753189', totalStr);
 
-  const fields = {
-    'entry.1308096832': name,
-    'entry.1078371469': baoList || '无',
-    'entry.705172156': salatList || '无',
-    'entry.1386287882': bowlList || '无',
-    'entry.1793753189': totalStr
-  };
+  try {
+    await fetch(FORM_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      body: formData
+    });
+  } catch (e) {
+    console.log('提交失败（但可能仍成功）', e);
+  }
 
-  Object.entries(fields).forEach(([key, val]) => {
-    const input = document.createElement('input');
-    input.type = 'hidden';
-    input.name = key;
-    input.value = val;
-    form.appendChild(input);
-  });
-
-  document.body.appendChild(form);
-  form.submit();
-
-  setTimeout(() => {
-    try { document.body.removeChild(form); document.body.removeChild(iframe); } catch(e) {}
-  }, 5000);
-
-  // 显示成功界面
+  // 显示成功
   document.getElementById('successName').textContent = '👤 ' + name;
   document.getElementById('successSummary').textContent = orderLines + ' · ' + totalStr;
   document.getElementById('successOverlay').classList.add('show');
