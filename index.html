@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>点餐 · Order</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green: #1f5c3a;
+    --green-light: #2d7a51;
+    --cream: #f5f0e8;
+    --cream-dark: #ece5d5;
+    --gold: #c9a84c;
+    --text: #2a1f14;
+    --text-muted: #7a6a55;
+    --white: #fdfaf4;
+    --red: #c0392b;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  header {
+    background: var(--green);
+    color: var(--cream);
+    text-align: center;
+    padding: 28px 20px 22px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+  }
+  header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    letter-spacing: 0.05em;
+    color: var(--gold);
+  }
+  header p {
+    font-size: 0.78rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(245,240,232,0.65);
+    margin-top: 4px;
+  }
+
+  /* TAB NAV */
+  nav {
+    display: flex;
+    background: var(--white);
+    border-bottom: 2px solid var(--cream-dark);
+    overflow-x: auto;
+    scrollbar-width: none;
+    position: sticky;
+    top: 96px;
+    z-index: 90;
+  }
+  nav::-webkit-scrollbar { display: none; }
+  nav button {
+    flex: none;
+    padding: 14px 22px;
+    font-family: 'Noto Serif SC', serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  nav button.active {
+    color: var(--green);
+    border-bottom-color: var(--green);
+  }
+  nav button:hover:not(.active) {
+    color: var(--text);
+  }
+
+  /* MAIN LAYOUT */
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 24px 16px 180px;
+  }
+
+  /* SECTION */
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 32px 0 20px;
+  }
+  .section-tag {
+    background: var(--green);
+    color: var(--gold);
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 700;
+    font-size: 1rem;
+    padding: 6px 18px;
+    border-radius: 2px;
+    letter-spacing: 0.08em;
+  }
+  .section-subtitle {
+    font-size: 0.75rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  /* MENU ITEM CARD */
+  .item-card {
+    background: var(--white);
+    border-radius: 10px;
+    padding: 18px 20px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    transition: box-shadow 0.2s, transform 0.15s;
+    border: 1.5px solid transparent;
+  }
+  .item-card:hover {
+    box-shadow: 0 6px 24px rgba(0,0,0,0.1);
+    transform: translateY(-1px);
+    border-color: var(--cream-dark);
+  }
+  .item-card.in-cart {
+    border-color: var(--green);
+    background: #f0f7f3;
+  }
+  .item-info { flex: 1; min-width: 0; }
+  .item-num {
+    font-size: 0.7rem;
+    color: var(--gold);
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .item-name-zh {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 1.05rem;
+    font-weight: 600;
+    margin: 2px 0 1px;
+  }
+  .item-name-de {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 0.82rem;
+    color: var(--green-light);
+    margin-bottom: 5px;
+  }
+  .item-ingredients {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+  .item-note {
+    font-size: 0.68rem;
+    color: var(--gold);
+    margin-top: 4px;
+    font-weight: 500;
+  }
+  .item-price {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--green);
+    white-space: nowrap;
+    min-width: 60px;
+    text-align: right;
+  }
+  .item-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
+    flex-shrink: 0;
+  }
+
+  /* QUANTITY CONTROL */
+  .qty-control {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    background: var(--cream);
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1.5px solid var(--cream-dark);
+  }
+  .qty-btn {
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: none;
+    color: var(--green);
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s;
+  }
+  .qty-btn:hover { background: var(--cream-dark); }
+  .qty-btn:active { background: var(--green); color: white; }
+  .qty-num {
+    min-width: 28px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--text);
+  }
+
+  /* SIZE SELECTOR */
+  .size-selector {
+    display: flex;
+    gap: 6px;
+    margin-top: 6px;
+  }
+  .size-btn {
+    padding: 3px 10px;
+    border: 1.5px solid var(--cream-dark);
+    border-radius: 20px;
+    font-size: 0.7rem;
+    background: none;
+    cursor: pointer;
+    color: var(--text-muted);
+    transition: all 0.15s;
+  }
+  .size-btn.active {
+    background: var(--green);
+    border-color: var(--green);
+    color: white;
+  }
+
+  /* NAME INPUT */
+  .name-section {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+    margin-bottom: 16px;
+  }
+  .name-section label {
+    display: block;
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 600;
+    margin-bottom: 10px;
+    font-size: 0.95rem;
+  }
+  .name-section input, .name-section textarea {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1.5px solid var(--cream-dark);
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    transition: border-color 0.2s;
+    margin-bottom: 10px;
+  }
+  .name-section input:focus, .name-section textarea:focus {
+    outline: none;
+    border-color: var(--green);
+  }
+  .name-section textarea { min-height: 60px; resize: vertical; }
+
+  /* CART PANEL */
+  .cart-panel {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--green);
+    color: white;
+    z-index: 200;
+    box-shadow: 0 -4px 24px rgba(0,0,0,0.25);
+    transition: transform 0.3s cubic-bezier(.4,0,.2,1);
+  }
+  .cart-summary {
+    display: flex;
+    align-items: center;
+    padding: 14px 20px;
+    cursor: pointer;
+    gap: 12px;
+  }
+  .cart-badge {
+    background: var(--gold);
+    color: var(--text);
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .cart-summary-text { flex: 1; font-size: 0.9rem; }
+  .cart-total-display {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--gold);
+  }
+  .cart-arrow {
+    font-size: 1rem;
+    transition: transform 0.3s;
+  }
+  .cart-panel.expanded .cart-arrow { transform: rotate(180deg); }
+
+  .cart-detail {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s cubic-bezier(.4,0,.2,1);
+    background: rgba(255,255,255,0.06);
+  }
+  .cart-panel.expanded .cart-detail {
+    max-height: 60vh;
+    overflow-y: auto;
+  }
+  .cart-items-list { padding: 0 20px 10px; }
+  .cart-item-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.12);
+    font-size: 0.88rem;
+  }
+  .cart-item-row:last-child { border-bottom: none; }
+  .cart-item-name { flex: 1; color: rgba(255,255,255,0.9); }
+  .cart-item-qty {
+    color: var(--gold);
+    font-weight: 700;
+    margin: 0 12px;
+    min-width: 20px;
+    text-align: center;
+  }
+  .cart-item-price { color: white; font-weight: 600; min-width: 55px; text-align: right; }
+  .cart-remove {
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.4);
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 0 0 0 8px;
+    transition: color 0.15s;
+  }
+  .cart-remove:hover { color: #e74c3c; }
+
+  /* ORDER FORM */
+  .order-form {
+    padding: 20px;
+    border-top: 1px solid rgba(255,255,255,0.15);
+  }
+  .order-form label {
+    display: block;
+    font-size: 0.78rem;
+    opacity: 0.7;
+    margin-bottom: 6px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .order-form input {
+    width: 100%;
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: none;
+    background: rgba(255,255,255,0.15);
+    color: white;
+    font-size: 0.95rem;
+    margin-bottom: 12px;
+  }
+  .order-form input::placeholder { color: rgba(255,255,255,0.4); }
+  .order-form input:focus { outline: 2px solid var(--gold); }
+
+  .submit-btn {
+    width: 100%;
+    padding: 14px;
+    background: var(--gold);
+    color: var(--text);
+    border: none;
+    border-radius: 10px;
+    font-family: 'Noto Serif SC', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    letter-spacing: 0.08em;
+    transition: all 0.2s;
+    margin-top: 4px;
+  }
+  .submit-btn:hover { background: #d4b560; transform: translateY(-1px); }
+  .submit-btn:disabled { background: rgba(201,168,76,0.4); transform: none; cursor: not-allowed; }
+  .submit-btn:active { transform: translateY(0); }
+
+  /* SUCCESS */
+  .success-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(31,92,58,0.95);
+    z-index: 999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    color: white;
+    text-align: center;
+    padding: 30px;
+  }
+  .success-overlay.show { display: flex; }
+  .success-icon { font-size: 4rem; margin-bottom: 20px; }
+  .success-overlay h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    color: var(--gold);
+    margin-bottom: 10px;
+  }
+  .success-overlay p { color: rgba(255,255,255,0.8); margin-bottom: 6px; }
+  .success-overlay .new-order-btn {
+    margin-top: 30px;
+    padding: 12px 32px;
+    background: var(--gold);
+    color: var(--text);
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  /* EMPTY CART */
+  .empty-note {
+    text-align: center;
+    color: rgba(255,255,255,0.45);
+    font-size: 0.82rem;
+    padding: 16px 0 4px;
+  }
+
+  /* HIDDEN */
+  .section-hidden { display: none; }
+
+  @media (max-width: 480px) {
+    header h1 { font-size: 1.5rem; }
+    nav button { padding: 12px 16px; font-size: 0.82rem; }
+    .item-card { flex-direction: column; }
+    .item-right { flex-direction: row; align-items: center; width: 100%; justify-content: space-between; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🥟 包子 · Bao</h1>
+  <p>Bestellung · 点餐</p>
+</header>
+
+<nav id="tabNav">
+  <button class="active" onclick="showSection('bao')">【包子】Bao</button>
+  <button onclick="showSection('salat')">【凉菜】Salat</button>
+  <button onclick="showSection('bowl')">【拌饭】Bowl</button>
+</nav>
+
+<main>
+  <!-- BAO SECTION -->
+  <div id="sec-bao">
+    <div class="section-header">
+      <span class="section-tag">肉包</span>
+      <span class="section-subtitle">Fleischbao</span>
+    </div>
+
+    <div class="item-card" id="card-1">
+      <div class="item-info">
+        <div class="item-num">No. 1</div>
+        <div class="item-name-zh">猪肉酸菜包</div>
+        <div class="item-name-de">Bao mit Schweinefleisch und Sauerkraut</div>
+        <div class="item-ingredients">Weizenmehl, Schweinehackfleisch, Sauerkraut, Frühlingszwiebeln</div>
+      </div>
+      <div class="item-right">
+        <div class="item-price">€2.50</div>
+        <div class="qty-control">
+          <button class="qty-btn" onclick="changeQty('1',false)">−</button>
+          <span class="qty-num" id="qty-1">0</span>
+          <button class="qty-btn" onclick="changeQty('1',true)">+</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="item-card" id="card-2">
+      <div class="item-info">
+        <div class="item-num">No. 2</div>
+        <div class="item-name-zh">鲜肉包</div>
+        <div class="item-name-de">Bao mit Schweinefleisch</div>
+        <div class="item-ingredients">Weizenmehl, Schweinehackfleisch, Frühlingszwiebeln</div>
+      </div>
+      <div class="item-right">
+        <div class="item-price">€2.50</div>
+        <div class="qty-control">
+          <button class="qty-btn" onclick="changeQty('2',false)">−</button>
+          <span class="qty-num" id="qty-2">0</span>
+          <button class="qty-btn" onclick="changeQty('2',true)">+</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="item-card" id="card-3">
+      <div class="item-info">
+        <div class="item-num">No. 3</div>
+        <div class="item-name-zh">肉末粉丝包</div>
+        <div class="item-name-de">Bao mit Hackfleisch und Glasnudeln</div>
+        <div class="item-ingredients">Weizenmehl, gemischtes Hackfleisch (Rind und Schwein), Glasnudeln, Frühlingszwiebeln</div>
+      </div>
+      <div class="item-right">
+        <div class="item-price">€2.50</div>
+        <div class="qty-control">
+          <button class="qty-btn" onclick="changeQty('3',false)">−</button>
+          <span class="qty-num" id="qty-3">0</span>
+          <button class="qty-btn" onclick="changeQty('3',true)">+</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="item-card" id="card-4">
+      <div class="item-info">
+        <div class="item-num">No. 4</div>
+        <div class="item-name-zh">奥尔良鸡肉包</div>
+        <div class="item-name-de">Bao mit Hähnchen</div>
+        <div class="item-ingredients">Weizenmehl, Hähnchen, Zuckermais, Karotten, Zwiebel</div>
+      </div>
+      <div class="item-right">
+        <div class="item-price">€2.50</div>
+        <div class="qty-control">
+          <button class="qty-btn" onclick="changeQty('4',false)">−</button>
+          <span class="qty-num" id="qty-4">0</span>
+          <button class="qty-btn" onclick="changeQty('4',true)">+</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-header" style="margin-top:36px">
+      <span class="section-tag">素包</span>
+      <span class="section-subtitle">Vegetarische Bao</span>
+    </div>
+
+    <div class="item-card" id="card-5">
+      <div class="item-info">
+        <div class="item-num">No. 5</div>
+        <div class="item-name-zh">素三鲜包</div>
+        <div class="item-name-de">Bao mit Ei, Zucchini und Karotten</div>
+        <div class="item-ingredients">Weizenmehl, Ei, Zucchini, Karotten, Frühlingszwiebeln</div>
+      </div>
+      <div class="item-right">
+        <div class="item-price">€2.20</div>
+        <div class="qty-control">
+          <button class="qty-btn" onclick="changeQty('5',false)">−</button>
+          <span class="qty-num" id="qty-5">0</span>
+          <button class="qty-btn" onclick="changeQty('5',true)">+</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="item-card" id="card-6">
+      <div class="item-info">
+        <div class="item-num">No. 6</div>
+        <div class="item-name-zh">南瓜包</div>
+        <div class="item-name-de">Bao mit Kürbis</div>
+        <div class="item-ingredients">Weizenmehl, Kürbis, grüne Chili, Frühlingszwiebeln</div>
+      </div>
+      <div class="item-right">
+        <div class="item-price">€2.20</div>
+        <div class="qty-control">
+          <button class="qty-btn" onclick="changeQty('6',false)">−</button>
+          <span class="qty-num" id="qty-6">0</span>
+          <button class="qty-btn" onclick="changeQty('6',true)">+</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="item-card" id="card-7">
+      <div class="item-info">
+        <div class="item-num">No. 7</div>
+        <div class="item-name-zh">香干包</div>
+        <div class="item-name-de">Bao mit gewürztem Tofo</div>
+        <div class="item-ingredients">Weizenmehl, Tofo, Spitzkohl, Karotten, Frühlingszwiebeln</div>
+      </div>
+      <div class="item-right">
+        <div class="item-price">€2.20</div>
+        <div class="qty-control">
+          <button class="qty-btn" onclick="changeQty('7',false)">−</button>
+          <span class="qty-num" id="qty-7">0</span>
+          <button class="qty-btn" onclick="changeQty('7',true)">+</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SALAT SECTION -->
+  <div id="sec-salat" class="section-hidden">
+    <div class="section-header">
+      <span class="section-tag">凉菜</span>
+      <span class="section-subtitle">Salat</span>
+    </div>
+
+    <div class="item-card" id="card-S1">
+      <div class="item-info">
+        <div class="item-num">S1</div>
+        <div class="item-name-zh">大拌菜（小份 / 大份）</div>
+        <div class="item-name-de">Bunter Chinasalat (klein / groß)</div>
+        <div class="item-ingredients">Chinakohl, Karotten, Gurken, Rotkohl, Endivie, Glasnudeln, Tofuhaut, Koriander, Knoblauch, getrocknete Chilischoten</div>
+        <div class="size-selector">
+          <button class="size-btn active" onclick="selectSize('S1','klein',3.50,this)">Klein €3.50</button>
+          <button class="size-btn" onclick="selectSize('S1','groß',6.50,this)">Groß €6.50</button>
+        </div>
+      </div>
+      <div class="item-right">
+        <div class="item-price" id="price-S1">€3.50</div>
+        <div class="qty-control">
+          <button class="qty-btn" onclick="changeQty('S1',false)">−</button>
+          <span class="qty-num" id="qty-S1">0</span>
+          <button class="qty-btn" onclick="changeQty('S1',true)">+</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="item-card" id="card-S2">
+      <div class="item-info">
+        <div class="item-num">S2</div>
+        <div class="item-name-zh">凉拌牛肉</div>
+        <div class="item-name-de">Rindfleischsalat</div>
+        <div class="item-ingredients">Rindfleisch, Gurken, Zwiebeln, Koriander, Erdnüsse</div>
+      </div>
+      <div class="item-right">
+        <div class="item-price">€5.00</div>
+        <div class="qty-control">
+          <button class="qty-btn" onclick="changeQty('S2',false)">−</button>
+          <span class="qty-num" id="qty-S2">0</span>
+          <button class="qty-btn" onclick="changeQty('S2',true)">+</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="item-card" id="card-S3">
+      <div class="item-info">
+        <div class="item-num">S3</div>
+        <div class="item-name-zh">炮打土豆丝</div>
+        <div class="item-name-de">Knackige Kartoffelstreifen 🌶️</div>
+        <div class="item-ingredients">Kartoffeln, Karotten, getrocknete Chilischoten, Sichuan-Pfeffer</div>
+      </div>
+      <div class="item-right">
+        <div class="item-price">€3.50</div>
+        <div class="qty-control">
+          <button class="qty-btn" onclick="changeQty('S3',false)">−</button>
+          <span class="qty-num" id="qty-S3">0</span>
+          <button class="qty-btn" onclick="changeQty('S3',true)">+</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="item-card" id="card-S4">
+      <div class="item-info">
+        <div class="item-num">S4</div>
+        <div class="item-name-zh">茶叶蛋</div>
+        <div class="item-name-de">Marmorierte Tee-Eier</div>
+        <div class="item-ingredients">Eier, Schwarztee, Gewürze</div>
+      </div>
+      <div class="item-right">
+        <div class="item-price">€1.20</div>
+        <div class="qty-control">
+          <button class="qty-btn" onclick="changeQty('S4',false)">−</button>
+          <span class="qty-num" id="qty-S4">0</span>
+          <button class="qty-btn" onclick="changeQty('S4',true)">+</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOWL SECTION -->
+  <div id="sec-bowl" class="section-hidden">
+    <div class="section-header">
+      <span class="section-tag">拌饭</span>
+      <span class="section-subtitle">Bowl</span>
+    </div>
+
+    <div class="item-card" id="card-F1">
+      <div class="item-info">
+        <div class="item-num">F1</div>
+        <div class="item-name-zh">烤肉拌饭</div>
+        <div class="item-name-de">Gegrillte Hähnchen Bowl</div>
+        <div class="item-ingredients">Hähnchenfleisch, Reis, schwarzer Reis, Salat, Kartoffeln, Karotten, grüne Chilischoten, Gurken, Zuckermais, Sesam</div>
+        <div class="item-note">🕐 Nur Mo.–Mi. (周一–周三供应)</div>
+      </div>
+      <div class="item-right">
+        <div class="item-price">€10.80</div>
+        <div class="qty-control">
+          <button class="qty-btn" onclick="changeQty('F1',false)">−</button>
+          <span class="qty-num" id="qty-F1">0</span>
+          <button class="qty-btn" onclick="changeQty('F1',true)">+</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="item-card" id="card-F2">
+      <div class="item-info">
+        <div class="item-num">F2</div>
+        <div class="item-name-zh">三文鱼豆腐拌饭</div>
+        <div class="item-name-de">Protein Mix Bowl</div>
+        <div class="item-ingredients">Lachs, Tofu, Weißer Shimeji-Pilz, Reis, schwarzer Reis, Salat, Rucola, Rotkohl, Karotten, Zuckermais, Frühlingszwiebeln, Sesam</div>
+        <div class="item-note">🕐 Nur Mo.–Mi. (周一–周三供应)</div>
+      </div>
+      <div class="item-right">
+        <div class="item-price">€12.80</div>
+        <div class="qty-control">
+          <button class="qty-btn" onclick="changeQty('F2',false)">−</button>
+          <span class="qty-num" id="qty-F2">0</span>
+          <button class="qty-btn" onclick="changeQty('F2',true)">+</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="item-card" id="card-F3">
+      <div class="item-info">
+        <div class="item-num">F3</div>
+        <div class="item-name-zh">葱烧豆腐拌饭</div>
+        <div class="item-name-de">Tofu Bowl (Täglich 每日供应)</div>
+        <div class="item-ingredients">Tofu, Reis, schwarzer Reis, Salat, Rucola, Karotten, Zuckermais, Ingwer, Frühlingszwiebeln, Sesam</div>
+        <div class="item-note">✅ 每日供应 (Täglich)</div>
+      </div>
+      <div class="item-right">
+        <div class="item-price">€10.80</div>
+        <div class="qty-control">
+          <button class="qty-btn" onclick="changeQty('F3',false)">−</button>
+          <span class="qty-num" id="qty-F3">0</span>
+          <button class="qty-btn" onclick="changeQty('F3',true)">+</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="item-card" id="card-F4">
+      <div class="item-info">
+        <div class="item-num">F4</div>
+        <div class="item-name-zh">水嫩鸡排拌饭</div>
+        <div class="item-name-de">Teriyaki Hähnchen Bowl</div>
+        <div class="item-ingredients">Hähnchenfilet, Reis, schwarzer Reis, Salat, Endivie, Karotten, Tomate, Zwiebeln, Koriander, Sesam</div>
+        <div class="item-note">🕐 Nur Do.–Sa. (周四–周六供应)</div>
+      </div>
+      <div class="item-right">
+        <div class="item-price">€11.80</div>
+        <div class="qty-control">
+          <button class="qty-btn" onclick="changeQty('F4',false)">−</button>
+          <span class="qty-num" id="qty-F4">0</span>
+          <button class="qty-btn" onclick="changeQty('F4',true)">+</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="item-card" id="card-F5">
+      <div class="item-info">
+        <div class="item-num">F5</div>
+        <div class="item-name-zh">牛肉拌饭</div>
+        <div class="item-name-de">Korean Beef Bowl 🌶️</div>
+        <div class="item-ingredients">Rindfleisch, Reis, schwarzer Reis, Kimchi, Salat, Zuckermais, Frühlingszwiebeln</div>
+        <div class="item-note">🕐 Nur Do.–Sa. (周四–周六供应)</div>
+      </div>
+      <div class="item-right">
+        <div class="item-price">€12.80</div>
+        <div class="qty-control">
+          <button class="qty-btn" onclick="changeQty('F5',false)">−</button>
+          <span class="qty-num" id="qty-F5">0</span>
+          <button class="qty-btn" onclick="changeQty('F5',true)">+</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- CART PANEL -->
+<div class="cart-panel" id="cartPanel">
+  <div class="cart-summary" onclick="toggleCart()">
+    <div class="cart-badge" id="cartBadge">0</div>
+    <div class="cart-summary-text">查看订单 · Bestellung ansehen</div>
+    <div class="cart-total-display" id="cartTotalDisplay">€0.00</div>
+    <div class="cart-arrow" id="cartArrow">▲</div>
+  </div>
+  <div class="cart-detail" id="cartDetail">
+    <div class="cart-items-list" id="cartItemsList">
+      <p class="empty-note">还没有选择商品 · Noch keine Artikel</p>
+    </div>
+    <div class="order-form">
+      <label>姓名 · Name *</label>
+      <input type="text" id="customerName" placeholder="Ihr Name / 您的姓名">
+      <button class="submit-btn" id="submitBtn" onclick="submitOrder()">提交订单 · Bestellen</button>
+    </div>
+  </div>
+</div>
+
+<!-- SUCCESS -->
+<div class="success-overlay" id="successOverlay">
+  <div class="success-icon">🎉</div>
+  <h2>订单已提交！</h2>
+  <p style="font-size:1.1rem;margin-bottom:4px">Bestellung erfolgreich!</p>
+  <p id="successName" style="color:var(--gold);font-size:1rem;font-weight:600;margin-top:8px"></p>
+  <p id="successSummary" style="margin-top:12px;font-size:0.85rem;opacity:0.7"></p>
+  <button class="new-order-btn" onclick="resetOrder()">再来一单 · Neue Bestellung</button>
+</div>
+
+<script>
+// Menu data
+const menuItems = {
+  '1':  { name: '猪肉酸菜包', de: 'Bao mit Schweinefleisch u. Sauerkraut', price: 2.50 },
+  '2':  { name: '鲜肉包', de: 'Bao mit Schweinefleisch', price: 2.50 },
+  '3':  { name: '肉末粉丝包', de: 'Bao mit Hackfleisch u. Glasnudeln', price: 2.50 },
+  '4':  { name: '奥尔良鸡肉包', de: 'Bao mit Hähnchen', price: 2.50 },
+  '5':  { name: '素三鲜包', de: 'Bao mit Ei, Zucchini u. Karotten', price: 2.20 },
+  '6':  { name: '南瓜包', de: 'Bao mit Kürbis', price: 2.20 },
+  '7':  { name: '香干包', de: 'Bao mit gewürztem Tofu', price: 2.20 },
+  'S1': { name: '大拌菜', de: 'Bunter Chinasalat', price: 3.50, size: 'klein' },
+  'S2': { name: '凉拌牛肉', de: 'Rindfleischsalat', price: 5.00 },
+  'S3': { name: '炮打土豆丝', de: 'Kartoffelstreifen', price: 3.50 },
+  'S4': { name: '茶叶蛋', de: 'Tee-Eier', price: 1.20 },
+  'F1': { name: '烤肉拌饭', de: 'Hähnchen Bowl', price: 10.80 },
+  'F2': { name: '三文鱼豆腐拌饭', de: 'Protein Mix Bowl', price: 12.80 },
+  'F3': { name: '葱烧豆腐拌饭', de: 'Tofu Bowl', price: 10.80 },
+  'F4': { name: '水嫩鸡排拌饭', de: 'Teriyaki Hähnchen Bowl', price: 11.80 },
+  'F5': { name: '牛肉拌饭', de: 'Korean Beef Bowl', price: 12.80 },
+};
+
+const quantities = {};
+Object.keys(menuItems).forEach(k => quantities[k] = 0);
+
+function changeQty(id, add) {
+  if (!add && quantities[id] === 0) return;
+  quantities[id] += add ? 1 : -1;
+  document.getElementById('qty-' + id).textContent = quantities[id];
+  const card = document.getElementById('card-' + id);
+  card.classList.toggle('in-cart', quantities[id] > 0);
+  updateCart();
+}
+
+function selectSize(id, size, price, btn) {
+  menuItems[id].price = price;
+  menuItems[id].size = size;
+  document.getElementById('price-' + id).textContent = '€' + price.toFixed(2);
+  btn.closest('.size-selector').querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  updateCart();
+}
+
+function updateCart() {
+  const items = Object.keys(quantities).filter(k => quantities[k] > 0);
+  const total = items.reduce((s, k) => s + quantities[k] * menuItems[k].price, 0);
+  const count = items.reduce((s, k) => s + quantities[k], 0);
+
+  document.getElementById('cartBadge').textContent = count;
+  document.getElementById('cartTotalDisplay').textContent = '€' + total.toFixed(2);
+
+  const list = document.getElementById('cartItemsList');
+  if (items.length === 0) {
+    list.innerHTML = '<p class="empty-note">还没有选择商品 · Noch keine Artikel</p>';
+  } else {
+    list.innerHTML = items.map(k => {
+      const m = menuItems[k];
+      const suffix = m.size ? ` (${m.size})` : '';
+      return `<div class="cart-item-row">
+        <span class="cart-item-name">${m.name}${suffix}</span>
+        <span class="cart-item-qty">×${quantities[k]}</span>
+        <span class="cart-item-price">€${(quantities[k]*m.price).toFixed(2)}</span>
+        <button class="cart-remove" onclick="removeItem('${k}')">✕</button>
+      </div>`;
+    }).join('');
+  }
+
+  document.getElementById('submitBtn').disabled = (count === 0);
+}
+
+function removeItem(id) {
+  quantities[id] = 0;
+  document.getElementById('qty-' + id).textContent = '0';
+  document.getElementById('card-' + id).classList.remove('in-cart');
+  updateCart();
+}
+
+let cartOpen = false;
+function toggleCart() {
+  cartOpen = !cartOpen;
+  const panel = document.getElementById('cartPanel');
+  panel.classList.toggle('expanded', cartOpen);
+}
+
+function showSection(sec) {
+  ['bao','salat','bowl'].forEach(s => {
+    document.getElementById('sec-' + s).classList.toggle('section-hidden', s !== sec);
+  });
+  document.querySelectorAll('#tabNav button').forEach((b, i) => {
+    b.classList.toggle('active', ['bao','salat','bowl'][i] === sec);
+  });
+}
+
+function submitOrder() {
+  const name = document.getElementById('customerName').value.trim();
+  if (!name) {
+    document.getElementById('customerName').focus();
+    document.getElementById('customerName').style.outline = '2px solid #e74c3c';
+    return;
+  }
+  document.getElementById('customerName').style.outline = '';
+
+  const items = Object.keys(quantities).filter(k => quantities[k] > 0);
+  if (items.length === 0) return;
+
+  const total = items.reduce((s, k) => s + quantities[k] * menuItems[k].price, 0);
+
+  const baoList = ['1','2','3','4','5','6','7'].filter(k => quantities[k] > 0)
+    .map(k => `${menuItems[k].name}×${quantities[k]}`).join(', ');
+  const salatList = ['S1','S2','S3','S4'].filter(k => quantities[k] > 0)
+    .map(k => `${menuItems[k].name}${menuItems[k].size ? '('+menuItems[k].size+')' : ''}×${quantities[k]}`).join(', ');
+  const bowlList = ['F1','F2','F3','F4','F5'].filter(k => quantities[k] > 0)
+    .map(k => `${menuItems[k].name}×${quantities[k]}`).join(', ');
+  const totalStr = '合计 €' + total.toFixed(2);
+  const orderLines = [baoList, salatList, bowlList].filter(Boolean).join(' | ');
+
+  // 用隐藏 iframe + form POST 绕过 CORS
+  const iframeName = 'gform_iframe_' + Date.now();
+  const iframe = document.createElement('iframe');
+  iframe.name = iframeName;
+  iframe.style.display = 'none';
+  document.body.appendChild(iframe);
+
+  const form = document.createElement('form');
+  form.method = 'POST';
+  form.action = 'https://docs.google.com/forms/d/e/1FAIpQLSey5ReIPGBfItFFXhGGNtmZILzwYvlMpdE_GXzWyUEvZ-7cHQ/formResponse';
+  form.target = iframeName;
+  form.style.display = 'none';
+
+  const fields = {
+    'entry.1308096832': name,
+    'entry.1078371469': baoList || '无',
+    'entry.705172156': salatList || '无',
+    'entry.1386287882': bowlList || '无',
+    'entry.1793753189': totalStr
+  };
+
+  Object.entries(fields).forEach(([key, val]) => {
+    const input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = key;
+    input.value = val;
+    form.appendChild(input);
+  });
+
+  document.body.appendChild(form);
+  form.submit();
+
+  setTimeout(() => {
+    try { document.body.removeChild(form); document.body.removeChild(iframe); } catch(e) {}
+  }, 5000);
+
+  // 显示成功界面
+  document.getElementById('successName').textContent = '👤 ' + name;
+  document.getElementById('successSummary').textContent = orderLines + ' · ' + totalStr;
+  document.getElementById('successOverlay').classList.add('show');
+}
+
+function resetOrder() {
+  Object.keys(quantities).forEach(k => {
+    quantities[k] = 0;
+    const el = document.getElementById('qty-' + k);
+    if (el) el.textContent = '0';
+    const card = document.getElementById('card-' + k);
+    if (card) card.classList.remove('in-cart');
+  });
+  document.getElementById('customerName').value = '';
+  document.getElementById('successOverlay').classList.remove('show');
+  cartOpen = false;
+  document.getElementById('cartPanel').classList.remove('expanded');
+  updateCart();
+}
+
+updateCart();
+</script>
+</body>
+</html>
