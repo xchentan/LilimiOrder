@@ -460,12 +460,46 @@
     .item-card { flex-direction: column; }
     .item-right { flex-direction: row; align-items: center; width: 100%; justify-content: space-between; }
   }
+
+  .vegan-badge {
+    display: inline-block;
+    font-size: 0.65rem;
+    background: #2d7a51;
+    color: white;
+    padding: 2px 7px;
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    vertical-align: middle;
+    margin-left: 4px;
+  }
+  .allergen-box {
+    background: var(--white);
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin-top: 32px;
+    margin-bottom: 8px;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    line-height: 1.8;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    border-left: 3px solid var(--gold);
+  }
+  .allergen-title {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 700;
+    font-size: 0.82rem;
+    color: var(--text);
+    margin-bottom: 8px;
+    letter-spacing: 0.05em;
+  }
 </style>
 </head>
 <body>
 
 <header>
-  <h1>🥟 包子 · Bao</h1>
+  <h1>Lilimi Bowl &amp; Bao</h1>
   <p>Bestellung · 点餐</p>
 </header>
 
@@ -576,7 +610,7 @@
     <div class="item-card" id="card-6">
       <div class="item-info">
         <div class="item-num">No. 6</div>
-        <div class="item-name-zh">南瓜包</div>
+        <div class="item-name-zh">南瓜包 <span class="vegan-badge">🌱 Vegan</span></div>
         <div class="item-name-de">Bao mit Kürbis</div>
         <div class="item-ingredients">Weizenmehl, Kürbis, grüne Chili, Frühlingszwiebeln</div>
       </div>
@@ -593,9 +627,9 @@
     <div class="item-card" id="card-7">
       <div class="item-info">
         <div class="item-num">No. 7</div>
-        <div class="item-name-zh">香干包</div>
+        <div class="item-name-zh">香干包 <span class="vegan-badge">🌱 Vegan</span></div>
         <div class="item-name-de">Bao mit gewürztem Tofo</div>
-        <div class="item-ingredients">Weizenmehl, Tofo, Spitzkohl, Karotten, Frühlingszwiebeln</div>
+        <div class="item-ingredients">Weizenmehl, Tofu, Spitzkohl, Karotten, Frühlingszwiebeln</div>
       </div>
       <div class="item-right">
         <div class="item-price">€2.20</div>
@@ -785,6 +819,16 @@
       </div>
     </div>
   </div>
+
+  <!-- ALLERGEN INFO -->
+  <div class="allergen-box">
+    <div class="allergen-title">Allergenkennzeichnung</div>
+    <p><strong>a)</strong> Glutenhaltiges Getreide &nbsp;<strong>b)</strong> Krebstiere &nbsp;<strong>c)</strong> Eier &nbsp;<strong>d)</strong> Fische &nbsp;<strong>e)</strong> Erdnüsse &nbsp;<strong>f)</strong> Sojabohnen &nbsp;<strong>g)</strong> Milch &amp; Laktose &nbsp;<strong>h)</strong> Schalenfrüchte &nbsp;<strong>i)</strong> Sellerie &nbsp;<strong>j)</strong> Senf &nbsp;<strong>k)</strong> Sesamsamen &nbsp;<strong>l)</strong> Schwefeldioxid &amp; Sulfite &nbsp;<strong>m)</strong> Lupinen &nbsp;<strong>n)</strong> Weichtiere</p>
+    <p style="margin-top:8px"><strong>Fleischbao:</strong> No.1 a,f,n &nbsp;|&nbsp; No.2 a,f,k,n &nbsp;|&nbsp; No.3 a,f,n &nbsp;|&nbsp; No.4 a,f</p>
+    <p><strong>Vegetarische Bao:</strong> No.5 a,c,f,k &nbsp;|&nbsp; No.6 a,k &nbsp;|&nbsp; No.7 a,f,k</p>
+    <p><strong>Salat:</strong> S1 f,k &nbsp;|&nbsp; S2 e,f,k &nbsp;|&nbsp; S3 f &nbsp;|&nbsp; S4 c,f</p>
+    <p><strong>Bowl:</strong> F1 c,k &nbsp;|&nbsp; F2 d,f,k &nbsp;|&nbsp; F3 f,k &nbsp;|&nbsp; F4 f &nbsp;|&nbsp; F5 f,k</p>
+  </div>
 </main>
 
 <!-- CART PANEL -->
@@ -802,6 +846,8 @@
     <div class="order-form">
       <label>姓名 · Name *</label>
       <input type="text" id="customerName" placeholder="Ihr Name / 您的姓名">
+      <label>备注 · Anmerkung</label>
+      <input type="text" id="customerNote" placeholder="z.B. Allergien, Sonderwünsche...">
       <button class="submit-btn" id="submitBtn" onclick="submitOrder()">提交订单 · Bestellen</button>
     </div>
   </div>
@@ -918,6 +964,7 @@ async function submitOrder() {
   }
   document.getElementById('customerName').style.outline = '';
 
+  const note = document.getElementById('customerNote').value.trim();
   const items = Object.keys(quantities).filter(k => quantities[k] > 0);
   if (items.length === 0) return;
 
@@ -943,6 +990,7 @@ async function submitOrder() {
     params.append('salats', salatList || '无');
     params.append('bowls', bowlList || '无');
     params.append('total', totalStr);
+    params.append('note', note || '无');
     await fetch('https://script.google.com/macros/s/AKfycbw5YFalmBcyZ6TqsF4quunHAz4Z6vaPz9nCjNk6riKXT_RMmMqowMkCsmveau3AvnppsA/exec', {
       method: 'POST',
       mode: 'no-cors',
@@ -967,6 +1015,7 @@ function resetOrder() {
     if (card) card.classList.remove('in-cart');
   });
   document.getElementById('customerName').value = '';
+  document.getElementById('customerNote').value = '';
   document.getElementById('successOverlay').classList.remove('show');
   cartOpen = false;
   document.getElementById('cartPanel').classList.remove('expanded');
