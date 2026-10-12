@@ -507,6 +507,9 @@
   <button class="active" onclick="showSection('bao')">【包子】Bao</button>
   <button onclick="showSection('salat')">【凉菜】Salat</button>
   <button onclick="showSection('bowl')">【拌饭】Bowl</button>
+  <button onclick="showSection('udon')">【乌冬面】Udon</button>
+  <button onclick="showSection('menu')">【套餐】Menü</button>
+  <button onclick="showSection('drinks')">【饮料】Getränke</button>
 </nav>
 
 <main>
@@ -587,7 +590,7 @@
 
     <div class="section-header" style="margin-top:36px">
       <span class="section-tag">素包</span>
-      <span class="section-subtitle">Vegetarische Bao</span>
+      <span class="section-subtitle">Vegetarische &amp; Vegan Bao</span>
     </div>
 
     <div class="item-card" id="card-5">
@@ -628,7 +631,7 @@
       <div class="item-info">
         <div class="item-num">No. 7</div>
         <div class="item-name-zh">香干包 <span class="vegan-badge">🌱 Vegan</span></div>
-        <div class="item-name-de">Bao mit gewürztem Tofo</div>
+        <div class="item-name-de">Bao mit gewürztem Tofu</div>
         <div class="item-ingredients">Weizenmehl, Tofu, Spitzkohl, Karotten, Frühlingszwiebeln</div>
       </div>
       <div class="item-right">
@@ -704,22 +707,6 @@
       </div>
     </div>
 
-    <div class="item-card" id="card-S4">
-      <div class="item-info">
-        <div class="item-num">S4</div>
-        <div class="item-name-zh">茶叶蛋</div>
-        <div class="item-name-de">Marmorierte Tee-Eier</div>
-        <div class="item-ingredients">Eier, Schwarztee, Gewürze</div>
-      </div>
-      <div class="item-right">
-        <div class="item-price">€1.20</div>
-        <div class="qty-control">
-          <button class="qty-btn" onclick="changeQty('S4',false)">−</button>
-          <span class="qty-num" id="qty-S4">0</span>
-          <button class="qty-btn" onclick="changeQty('S4',true)">+</button>
-        </div>
-      </div>
-    </div>
   </div>
 
   <!-- BOWL SECTION -->
@@ -750,13 +737,13 @@
     <div class="item-card" id="card-F2">
       <div class="item-info">
         <div class="item-num">F2</div>
-        <div class="item-name-zh">三文鱼豆腐拌饭</div>
-        <div class="item-name-de">Protein Mix Bowl</div>
-        <div class="item-ingredients">Lachs, Tofu, Weißer Shimeji-Pilz, Reis, schwarzer Reis, Salat, Rucola, Rotkohl, Karotten, Zuckermais, Frühlingszwiebeln, Sesam</div>
-        <div class="item-note">🕐 Nur Mo.–Mi. (周一–周三供应)</div>
+        <div class="item-name-zh">葱烧豆腐拌饭</div>
+        <div class="item-name-de">Tofu Bowl (Täglich 每日供应) 🌱</div>
+        <div class="item-ingredients">Tofu, Reis, schwarzer Reis, Salat, Rucola, Karotten, Zuckermais, Ingwer, Frühlingszwiebeln, Sesam</div>
+        <div class="item-note">✅ 每日供应 (Täglich)</div>
       </div>
       <div class="item-right">
-        <div class="item-price">€12.80</div>
+        <div class="item-price">€10.80</div>
         <div class="qty-control">
           <button class="qty-btn" onclick="changeQty('F2',false)">−</button>
           <span class="qty-num" id="qty-F2">0</span>
@@ -768,42 +755,6 @@
     <div class="item-card" id="card-F3">
       <div class="item-info">
         <div class="item-num">F3</div>
-        <div class="item-name-zh">葱烧豆腐拌饭</div>
-        <div class="item-name-de">Tofu Bowl (Täglich 每日供应)</div>
-        <div class="item-ingredients">Tofu, Reis, schwarzer Reis, Salat, Rucola, Karotten, Zuckermais, Ingwer, Frühlingszwiebeln, Sesam</div>
-        <div class="item-note">✅ 每日供应 (Täglich)</div>
-      </div>
-      <div class="item-right">
-        <div class="item-price">€10.80</div>
-        <div class="qty-control">
-          <button class="qty-btn" onclick="changeQty('F3',false)">−</button>
-          <span class="qty-num" id="qty-F3">0</span>
-          <button class="qty-btn" onclick="changeQty('F3',true)">+</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="item-card" id="card-F4">
-      <div class="item-info">
-        <div class="item-num">F4</div>
-        <div class="item-name-zh">水嫩鸡排拌饭</div>
-        <div class="item-name-de">Teriyaki Hähnchen Bowl</div>
-        <div class="item-ingredients">Hähnchenfilet, Reis, schwarzer Reis, Salat, Endivie, Karotten, Tomate, Zwiebeln, Koriander, Sesam</div>
-        <div class="item-note">🕐 Nur Do.–Sa. (周四–周六供应)</div>
-      </div>
-      <div class="item-right">
-        <div class="item-price">€11.80</div>
-        <div class="qty-control">
-          <button class="qty-btn" onclick="changeQty('F4',false)">−</button>
-          <span class="qty-num" id="qty-F4">0</span>
-          <button class="qty-btn" onclick="changeQty('F4',true)">+</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="item-card" id="card-F5">
-      <div class="item-info">
-        <div class="item-num">F5</div>
         <div class="item-name-zh">牛肉拌饭</div>
         <div class="item-name-de">Korean Beef Bowl 🌶️</div>
         <div class="item-ingredients">Rindfleisch, Reis, schwarzer Reis, Kimchi, Salat, Zuckermais, Frühlingszwiebeln</div>
@@ -812,9 +763,186 @@
       <div class="item-right">
         <div class="item-price">€12.80</div>
         <div class="qty-control">
-          <button class="qty-btn" onclick="changeQty('F5',false)">−</button>
-          <span class="qty-num" id="qty-F5">0</span>
-          <button class="qty-btn" onclick="changeQty('F5',true)">+</button>
+          <button class="qty-btn" onclick="changeQty('F3',false)">−</button>
+          <span class="qty-num" id="qty-F3">0</span>
+          <button class="qty-btn" onclick="changeQty('F3',true)">+</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+
+  <!-- UDON SECTION -->
+  <div id="sec-udon" class="section-hidden">
+    <div class="section-header">
+      <span class="section-tag">炒乌冬面</span>
+      <span class="section-subtitle">Gebratene Udon-Nudeln</span>
+    </div>
+    <p style="font-size:0.75rem;color:var(--text-muted);margin-bottom:16px">Alle Gerichte mit frischem Gemüse (Kohl, Karotten, Zwiebeln)</p>
+
+    <div class="item-card" id="card-U1">
+      <div class="item-info">
+        <div class="item-num">U1</div>
+        <div class="item-name-zh">蔬菜乌冬面 <span class="vegan-badge">🌱 Vegan</span></div>
+        <div class="item-name-de">Gemüse Udon</div>
+        <div class="item-ingredients">Gebratene Udon-Nudeln mit verschiedenem frischen Gemüse</div>
+      </div>
+      <div class="item-right">
+        <div class="item-price">€8.80</div>
+        <div class="qty-control">
+          <button class="qty-btn" onclick="changeQty('U1',false)">−</button>
+          <span class="qty-num" id="qty-U1">0</span>
+          <button class="qty-btn" onclick="changeQty('U1',true)">+</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="item-card" id="card-U2">
+      <div class="item-info">
+        <div class="item-num">U2</div>
+        <div class="item-name-zh">鸡蛋乌冬面</div>
+        <div class="item-name-de">Ei Udon</div>
+        <div class="item-ingredients">Gebratene Udon-Nudeln mit Ei und frischem Gemüse</div>
+      </div>
+      <div class="item-right">
+        <div class="item-price">€9.80</div>
+        <div class="qty-control">
+          <button class="qty-btn" onclick="changeQty('U2',false)">−</button>
+          <span class="qty-num" id="qty-U2">0</span>
+          <button class="qty-btn" onclick="changeQty('U2',true)">+</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="item-card" id="card-U3">
+      <div class="item-info">
+        <div class="item-num">U3</div>
+        <div class="item-name-zh">鸡肉乌冬面</div>
+        <div class="item-name-de">Hühnerfleisch Udon</div>
+        <div class="item-ingredients">Gebratene Udon-Nudeln mit Hähnchen und frischem Gemüse</div>
+      </div>
+      <div class="item-right">
+        <div class="item-price">€10.80</div>
+        <div class="qty-control">
+          <button class="qty-btn" onclick="changeQty('U3',false)">−</button>
+          <span class="qty-num" id="qty-U3">0</span>
+          <button class="qty-btn" onclick="changeQty('U3',true)">+</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="item-card" id="card-U4">
+      <div class="item-info">
+        <div class="item-num">U4</div>
+        <div class="item-name-zh">牛肉乌冬面</div>
+        <div class="item-name-de">Rindfleisch Udon</div>
+        <div class="item-ingredients">Gebratene Udon-Nudeln mit Rindfleisch und frischem Gemüse</div>
+      </div>
+      <div class="item-right">
+        <div class="item-price">€12.80</div>
+        <div class="qty-control">
+          <button class="qty-btn" onclick="changeQty('U4',false)">−</button>
+          <span class="qty-num" id="qty-U4">0</span>
+          <button class="qty-btn" onclick="changeQty('U4',true)">+</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MENÜ SECTION -->
+  <div id="sec-menu" class="section-hidden">
+    <div class="section-header">
+      <span class="section-tag">套餐</span>
+      <span class="section-subtitle">Bao Menü</span>
+    </div>
+
+    <div class="item-card" id="card-M1">
+      <div class="item-info">
+        <div class="item-num">Menü</div>
+        <div class="item-name-zh">包子套餐</div>
+        <div class="item-name-de">Bao Menü — 3 Bao + 1 Salat nach Wahl</div>
+        <div class="item-ingredients">Salat: Bunter Chinasalat oder Knackige Kartoffelstreifen · Bao-Auswahl je nach Wochentag (Mo–Mi: Schweinefleisch+Sauerkraut, Hähnchen, Kürbis · Do–Sa: Schweinefleisch, Hackfleisch+Glasnudeln, gewürzter Tofu)</div>
+        <div class="item-note">💡 Je 1 Bao von jeder verfügbaren Sorte</div>
+      </div>
+      <div class="item-right">
+        <div class="item-price">€9.80</div>
+        <div class="qty-control">
+          <button class="qty-btn" onclick="changeQty('M1',false)">−</button>
+          <span class="qty-num" id="qty-M1">0</span>
+          <button class="qty-btn" onclick="changeQty('M1',true)">+</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DRINKS SECTION -->
+  <div id="sec-drinks" class="section-hidden">
+    <div class="section-header">
+      <span class="section-tag">饮料</span>
+      <span class="section-subtitle">Getränke</span>
+    </div>
+
+    <div class="item-card" id="card-D1">
+      <div class="item-info">
+        <div class="item-num">D1</div>
+        <div class="item-name-zh">可乐</div>
+        <div class="item-name-de">Cola</div>
+      </div>
+      <div class="item-right">
+        <div class="item-price">€2.00</div>
+        <div class="qty-control">
+          <button class="qty-btn" onclick="changeQty('D1',false)">−</button>
+          <span class="qty-num" id="qty-D1">0</span>
+          <button class="qty-btn" onclick="changeQty('D1',true)">+</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="item-card" id="card-D2">
+      <div class="item-info">
+        <div class="item-num">D2</div>
+        <div class="item-name-zh">雪碧</div>
+        <div class="item-name-de">Sprite</div>
+      </div>
+      <div class="item-right">
+        <div class="item-price">€2.00</div>
+        <div class="qty-control">
+          <button class="qty-btn" onclick="changeQty('D2',false)">−</button>
+          <span class="qty-num" id="qty-D2">0</span>
+          <button class="qty-btn" onclick="changeQty('D2',true)">+</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="item-card" id="card-D3">
+      <div class="item-info">
+        <div class="item-num">D3</div>
+        <div class="item-name-zh">芬达</div>
+        <div class="item-name-de">Fanta</div>
+      </div>
+      <div class="item-right">
+        <div class="item-price">€2.00</div>
+        <div class="qty-control">
+          <button class="qty-btn" onclick="changeQty('D3',false)">−</button>
+          <span class="qty-num" id="qty-D3">0</span>
+          <button class="qty-btn" onclick="changeQty('D3',true)">+</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="item-card" id="card-D4">
+      <div class="item-info">
+        <div class="item-num">D4</div>
+        <div class="item-name-zh">零度可乐</div>
+        <div class="item-name-de">Cola Zero</div>
+      </div>
+      <div class="item-right">
+        <div class="item-price">€2.00</div>
+        <div class="qty-control">
+          <button class="qty-btn" onclick="changeQty('D4',false)">−</button>
+          <span class="qty-num" id="qty-D4">0</span>
+          <button class="qty-btn" onclick="changeQty('D4',true)">+</button>
         </div>
       </div>
     </div>
@@ -826,8 +954,9 @@
     <p><strong>a)</strong> Glutenhaltiges Getreide &nbsp;<strong>b)</strong> Krebstiere &nbsp;<strong>c)</strong> Eier &nbsp;<strong>d)</strong> Fische &nbsp;<strong>e)</strong> Erdnüsse &nbsp;<strong>f)</strong> Sojabohnen &nbsp;<strong>g)</strong> Milch &amp; Laktose &nbsp;<strong>h)</strong> Schalenfrüchte &nbsp;<strong>i)</strong> Sellerie &nbsp;<strong>j)</strong> Senf &nbsp;<strong>k)</strong> Sesamsamen &nbsp;<strong>l)</strong> Schwefeldioxid &amp; Sulfite &nbsp;<strong>m)</strong> Lupinen &nbsp;<strong>n)</strong> Weichtiere</p>
     <p style="margin-top:8px"><strong>Fleischbao:</strong> No.1 a,f,n &nbsp;|&nbsp; No.2 a,f,k,n &nbsp;|&nbsp; No.3 a,f,n &nbsp;|&nbsp; No.4 a,f</p>
     <p><strong>Vegetarische Bao:</strong> No.5 a,c,f,k &nbsp;|&nbsp; No.6 a,k &nbsp;|&nbsp; No.7 a,f,k</p>
-    <p><strong>Salat:</strong> S1 f,k &nbsp;|&nbsp; S2 e,f,k &nbsp;|&nbsp; S3 f &nbsp;|&nbsp; S4 c,f</p>
-    <p><strong>Bowl:</strong> F1 c,k &nbsp;|&nbsp; F2 d,f,k &nbsp;|&nbsp; F3 f,k &nbsp;|&nbsp; F4 f &nbsp;|&nbsp; F5 f,k</p>
+    <p><strong>Salat:</strong> S1 f,k &nbsp;|&nbsp; S2 e,f,k &nbsp;|&nbsp; S3 f</p>
+    <p><strong>Bowl:</strong> F1 c,k &nbsp;|&nbsp; F2 f,k &nbsp;|&nbsp; F3 f,k</p>
+    <p><strong>Menü:</strong> a,f,k,n</p>
   </div>
 </main>
 
@@ -876,12 +1005,18 @@ const menuItems = {
   'S1': { name: '大拌菜', de: 'Bunter Chinasalat', price: 3.50, size: 'klein' },
   'S2': { name: '凉拌牛肉', de: 'Rindfleischsalat', price: 5.00 },
   'S3': { name: '炮打土豆丝', de: 'Kartoffelstreifen', price: 3.50 },
-  'S4': { name: '茶叶蛋', de: 'Tee-Eier', price: 1.20 },
   'F1': { name: '烤肉拌饭', de: 'Hähnchen Bowl', price: 10.80 },
-  'F2': { name: '三文鱼豆腐拌饭', de: 'Protein Mix Bowl', price: 12.80 },
-  'F3': { name: '葱烧豆腐拌饭', de: 'Tofu Bowl', price: 10.80 },
-  'F4': { name: '水嫩鸡排拌饭', de: 'Teriyaki Hähnchen Bowl', price: 11.80 },
-  'F5': { name: '牛肉拌饭', de: 'Korean Beef Bowl', price: 12.80 },
+  'F2': { name: '葱烧豆腐拌饭', de: 'Tofu Bowl', price: 10.80 },
+  'F3': { name: '牛肉拌饭', de: 'Korean Beef Bowl', price: 12.80 },
+  'U1': { name: '蔬菜乌冬面', de: 'Gemüse Udon', price: 8.80 },
+  'U2': { name: '鸡蛋乌冬面', de: 'Ei Udon', price: 9.80 },
+  'U3': { name: '鸡肉乌冬面', de: 'Hühnerfleisch Udon', price: 10.80 },
+  'U4': { name: '牛肉乌冬面', de: 'Rindfleisch Udon', price: 12.80 },
+  'M1': { name: '包子套餐', de: 'Bao Menü (3 Bao + Salat)', price: 9.80 },
+  'D1': { name: '可乐', de: 'Cola', price: 2.00 },
+  'D2': { name: '雪碧', de: 'Sprite', price: 2.00 },
+  'D3': { name: '芬达', de: 'Fanta', price: 2.00 },
+  'D4': { name: '零度可乐', de: 'Cola Zero', price: 2.00 },
 };
 
 const quantities = {};
@@ -947,11 +1082,11 @@ function toggleCart() {
 }
 
 function showSection(sec) {
-  ['bao','salat','bowl'].forEach(s => {
+  ['bao','salat','bowl','udon','menu','drinks'].forEach(s => {
     document.getElementById('sec-' + s).classList.toggle('section-hidden', s !== sec);
   });
   document.querySelectorAll('#tabNav button').forEach((b, i) => {
-    b.classList.toggle('active', ['bao','salat','bowl'][i] === sec);
+    b.classList.toggle('active', ['bao','salat','bowl','udon','menu','drinks'][i] === sec);
   });
 }
 
@@ -978,10 +1113,16 @@ async function submitOrder() {
     .map(k => `${menuItems[k].name}×${quantities[k]}`).join(', ');
   const salatList = ['S1','S2','S3','S4'].filter(k => quantities[k] > 0)
     .map(k => `${menuItems[k].name}${menuItems[k].size ? '('+menuItems[k].size+')' : ''}×${quantities[k]}`).join(', ');
-  const bowlList = ['F1','F2','F3','F4','F5'].filter(k => quantities[k] > 0)
+  const bowlList = ['F1','F2','F3'].filter(k => quantities[k] > 0)
+    .map(k => `${menuItems[k].name}×${quantities[k]}`).join(', ');
+  const udonList = ['U1','U2','U3','U4'].filter(k => quantities[k] > 0)
+    .map(k => `${menuItems[k].name}×${quantities[k]}`).join(', ');
+  const menuList = ['M1'].filter(k => quantities[k] > 0)
+    .map(k => `${menuItems[k].name}×${quantities[k]}`).join(', ');
+  const drinkList = ['D1','D2','D3','D4'].filter(k => quantities[k] > 0)
     .map(k => `${menuItems[k].name}×${quantities[k]}`).join(', ');
   const totalStr = '合计 €' + total.toFixed(2);
-  const orderLines = [baoList, salatList, bowlList].filter(Boolean).join(' | ');
+  const orderLines = [baoList, salatList, bowlList, udonList, menuList, drinkList].filter(Boolean).join(' | ');
 
   try {
     const params = new URLSearchParams();
@@ -989,6 +1130,9 @@ async function submitOrder() {
     params.append('baos', baoList || '无');
     params.append('salats', salatList || '无');
     params.append('bowls', bowlList || '无');
+    params.append('udon', udonList || '无');
+    params.append('menu', menuList || '无');
+    params.append('drinks', drinkList || '无');
     params.append('total', totalStr);
     params.append('note', note || '无');
     await fetch('https://script.google.com/macros/s/AKfycbw5YFalmBcyZ6TqsF4quunHAz4Z6vaPz9nCjNk6riKXT_RMmMqowMkCsmveau3AvnppsA/exec', {
